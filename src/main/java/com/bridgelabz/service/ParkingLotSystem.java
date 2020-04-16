@@ -2,12 +2,12 @@ package com.bridgelabz.service;
 
 public class ParkingLotSystem {
     Object vehicle = null;
-    public boolean parkVehicle(Object vehicle) {
-        if(this.vehicle==null) {
-            this.vehicle = vehicle;
-            return true;
+    public void parkVehicle(Object vehicle) throws ParkingLotException {
+        if(this.vehicle!=null) {
+            throw new ParkingLotException("Parking lot is full.");
         }
-        return false;
+        this.vehicle = vehicle;
+
     }
 
     public boolean unParkVehicle(Object vehicle) {
@@ -16,6 +16,12 @@ public class ParkingLotSystem {
             this.vehicle = null;
             return true;
         }
+        return false;
+    }
+
+    public boolean isVehicleParked(Object vehicle) {
+        if (this.vehicle.equals(vehicle))
+            return true;
         return false;
     }
 }
