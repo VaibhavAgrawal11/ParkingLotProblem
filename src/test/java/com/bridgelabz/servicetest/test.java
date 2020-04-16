@@ -19,6 +19,13 @@ public class test {
     }
 
     @Test
+    public void givenVehicle_WhenLotIsNotEmpty_ShouldReturnFalse() {
+        parkingLotSystem.parkVehicle(new Object());
+        boolean isParked = parkingLotSystem.parkVehicle(new Object());
+        Assert.assertFalse(isParked);
+    }
+
+    @Test
     public void givenVehicle_WhenUnParked_ShouldReturnTrue() {
         Object vehicle = new Object();
         boolean isParked = parkingLotSystem.parkVehicle(vehicle);
