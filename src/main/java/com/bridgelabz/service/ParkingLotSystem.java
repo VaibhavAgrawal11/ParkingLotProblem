@@ -1,11 +1,15 @@
 package com.bridgelabz.service;
 
 public class ParkingLotSystem {
-    public static void main(String[] args) {
-        System.out.println("Welcome to parking lot TDD problem.");
+    Object vehicle = null;
+    public boolean parkVehicle(Object vehicle) {
+        this.vehicle = vehicle;
+        return true;
     }
 
-    public boolean parkVehicle(Object vehicle) {
+    public boolean unParkVehicle(Object o) {
+        if(this.vehicle==null)
+            return false;
         return true;
     }
 }
