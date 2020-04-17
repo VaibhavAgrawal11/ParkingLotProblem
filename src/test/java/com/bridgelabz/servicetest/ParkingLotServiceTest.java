@@ -1,6 +1,6 @@
 package com.bridgelabz.servicetest;
 
-import com.bridgelabz.service.ParkingLotException;
+import com.bridgelabz.exception.ParkingLotException;
 import com.bridgelabz.service.ParkingLotSystem;
 import org.junit.Assert;
 import org.junit.Before;
@@ -12,7 +12,7 @@ public class ParkingLotServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        parkingLotSystem = new ParkingLotSystem();
+        parkingLotSystem = new ParkingLotSystem(100);
         vehicle = new Object();
     }
 
@@ -21,16 +21,6 @@ public class ParkingLotServiceTest {
         parkingLotSystem.parkVehicle(vehicle);
         boolean isParked = parkingLotSystem.isVehicleParked(vehicle);
         Assert.assertTrue(isParked);
-    }
-
-    @Test
-    public void givenVehicle_WhenLotIsNotEmpty_ShouldReturnFalse() {
-        try {
-            parkingLotSystem.parkVehicle(vehicle);
-            parkingLotSystem.parkVehicle(new Object());
-        } catch (ParkingLotException e) {
-            Assert.assertEquals("Parking lot is full.",e.getMessage());
-        }
     }
 
     @Test
@@ -45,4 +35,29 @@ public class ParkingLotServiceTest {
         boolean isUnParked = parkingLotSystem.unParkVehicle(vehicle);
         Assert.assertFalse(isUnParked);
     }
+
+    @Test
+    public void givenVehicles_WhenParkingFull_ShouldThrowException() {
+        ParkingLotSystem parkingLotSystem = new ParkingLotSystem(5);
+        try {
+            parkingLotSystem.parkVehicle(vehicle);
+            parkingLotSystem.parkVehicle(new Object());
+            parkingLotSystem.parkVehicle(new Object());
+            parkingLotSystem.parkVehicle(new Object());
+            parkingLotSystem.parkVehicle(new Object());
+            parkingLotSystem.parkVehicle(new Object());
+        } catch (ParkingLotException e) {
+            Assert.assertEquals("Parking lot is full.", e.getMessage());
+        }
+    }
+
+    @Test
+    public void givenVehicles_WhenExactParkingIsDone_ShouldReturnTrue() throws ParkingLotException {
+        ParkingLotSystem parkingLotSystem = new ParkingLotSystem(2);
+        parkingLotSystem.parkVehicle(new Object());
+        parkingLotSystem.parkVehicle(vehicle);
+        boolean isParked = parkingLotSystem.isVehicleParked(vehicle);
+        Assert.assertEquals(true,isParked);
+    }
 }
+

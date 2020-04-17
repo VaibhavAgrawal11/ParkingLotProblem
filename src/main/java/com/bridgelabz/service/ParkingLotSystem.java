@@ -1,27 +1,40 @@
 package com.bridgelabz.service;
 
-public class ParkingLotSystem {
-    Object vehicle = null;
-    public void parkVehicle(Object vehicle) throws ParkingLotException {
-        if(this.vehicle!=null) {
-            throw new ParkingLotException("Parking lot is full.");
-        }
-        this.vehicle = vehicle;
+import com.bridgelabz.exception.ParkingLotException;
+import com.bridgelabz.utilities.Owner;
+import com.bridgelabz.utilities.ParkingLot;
 
+import java.util.ArrayList;
+
+public class ParkingLotSystem {
+    public ParkingLotSystem(int lotCapacity) {
+        parkingLot.setLotCapacity(lotCapacity);
     }
 
-    public boolean unParkVehicle(Object vehicle) {
-        if (this.vehicle==null) return false;
-        if(this.vehicle.equals(vehicle)) {
-            this.vehicle = null;
-            return true;
-        }
-        return false;
+    int counter = 0;
+    Owner owner = new Owner();
+    ParkingLot parkingLot = new ParkingLot();
+    ArrayList lotList = parkingLot.getParkingLots();
+
+    public void parkVehicle(Object vehicle) throws ParkingLotException {
+        if (counter >= parkingLot.getLotCapacity())
+            owner.sendParkingFullMessage();
+        lotList.add(vehicle);
+        counter++;
     }
 
     public boolean isVehicleParked(Object vehicle) {
-        if (this.vehicle.equals(vehicle))
+        return lotList.contains(vehicle);
+    }
+
+    public boolean unParkVehicle(Object vehicle) {
+        if (lotList.contains(vehicle)) {
+            lotList.remove(vehicle);
+            counter--;
             return true;
+        }
         return false;
     }
+
+
 }
