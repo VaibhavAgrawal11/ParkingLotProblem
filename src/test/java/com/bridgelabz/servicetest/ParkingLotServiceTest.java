@@ -106,4 +106,3 @@ public class ParkingLotServiceTest {
         Assert.assertEquals(owner.getSign(), null);
     }
 }
-
