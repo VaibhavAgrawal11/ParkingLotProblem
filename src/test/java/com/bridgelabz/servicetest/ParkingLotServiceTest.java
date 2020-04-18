@@ -93,5 +93,17 @@ public class ParkingLotServiceTest {
         parkingLotSystem1.parkVehicle(new Object());
         Assert.assertEquals(false,securityPersonal.redirectSecurityStaff());
     }
+
+    @Test
+    public void givenParkingLotFull_WhenVehicleUnParked_OwnerShouldRemoveFullSign() throws ParkingLotException {
+        Owner owner = new Owner();
+        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(3);
+        parkingLotSystem1.register(owner);
+        parkingLotSystem1.parkVehicle(vehicle);
+        parkingLotSystem1.parkVehicle(new Object());
+        parkingLotSystem1.parkVehicle(new Object());
+        parkingLotSystem1.unParkVehicle(vehicle);
+        Assert.assertEquals(owner.getSign(), null);
+    }
 }
 

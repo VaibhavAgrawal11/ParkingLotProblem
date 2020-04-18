@@ -57,6 +57,7 @@ public class ParkingLotSystem implements Subject {
         if (lotList.contains(vehicle)) {
             lotList.remove(vehicle);
             counter--;
+            this.notifyObservers();
             return true;
         }
         return false;

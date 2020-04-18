@@ -10,6 +10,7 @@ public class Owner implements Observer {
     public void sendParkingMessage(int currentVehicleCount, int lotCapacity) {
         if (currentVehicleCount >= lotCapacity)
             setSign(Sign.PARKING_IS_FULL);
+        else setSign(null);
     }
 
     public Sign getSign() {
