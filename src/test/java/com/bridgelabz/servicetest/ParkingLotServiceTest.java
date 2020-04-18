@@ -2,6 +2,8 @@ package com.bridgelabz.servicetest;
 
 import com.bridgelabz.exception.ParkingLotException;
 import com.bridgelabz.service.ParkingLotSystem;
+import com.bridgelabz.utilities.AirportSecurityPersonal;
+import com.bridgelabz.utilities.Owner;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,6 +60,38 @@ public class ParkingLotServiceTest {
         parkingLotSystem.parkVehicle(vehicle);
         boolean isParked = parkingLotSystem.isVehicleParked(vehicle);
         Assert.assertEquals(true,isParked);
+    }
+
+    @Test
+    public void givenParkingLotFull_OwnerShouldShowFullSign() throws ParkingLotException {
+        Owner owner = new Owner();
+        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(3);
+        parkingLotSystem1.register(owner);
+        parkingLotSystem1.parkVehicle(vehicle);
+        parkingLotSystem1.parkVehicle(new Object());
+        parkingLotSystem1.parkVehicle(new Object());
+        Assert.assertEquals(owner.getSign(), Owner.Sign.PARKING_IS_FULL);
+    }
+
+    @Test
+    public void givenParkingLotFull_SecurityShouldBeCalled() throws ParkingLotException {
+        AirportSecurityPersonal securityPersonal = new AirportSecurityPersonal();
+        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(3);
+        parkingLotSystem1.register(securityPersonal);
+        parkingLotSystem1.parkVehicle(vehicle);
+        parkingLotSystem1.parkVehicle(new Object());
+        parkingLotSystem1.parkVehicle(new Object());
+        Assert.assertEquals(true,securityPersonal.redirectSecurityStaff());
+    }
+
+    @Test
+    public void givenParkingNotLotFull_SecurityShouldNotBeCalled() throws ParkingLotException {
+        AirportSecurityPersonal securityPersonal = new AirportSecurityPersonal();
+        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(3);
+        parkingLotSystem1.register(securityPersonal);
+        parkingLotSystem1.parkVehicle(vehicle);
+        parkingLotSystem1.parkVehicle(new Object());
+        Assert.assertEquals(false,securityPersonal.redirectSecurityStaff());
     }
 }
 
