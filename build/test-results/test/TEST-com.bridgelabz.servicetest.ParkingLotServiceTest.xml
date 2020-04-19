@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.bridgelabz.servicetest.ParkingLotServiceTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2020-04-18T13:55:20" hostname="vaibhav-Satellite-L655" time="0.018">
+<testsuite name="com.bridgelabz.servicetest.ParkingLotServiceTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2020-04-19T06:09:18" hostname="vaibhav-Satellite-L655" time="0.016">
   <properties/>
-  <testcase name="givenParkingLotFull_OwnerShouldShowFullSign" classname="com.bridgelabz.servicetest.ParkingLotServiceTest" time="0.005"/>
+  <testcase name="givenParkingLotFull_OwnerShouldShowFullSign" classname="com.bridgelabz.servicetest.ParkingLotServiceTest" time="0.006"/>
   <testcase name="givenVehicle_WhenUnParked_ShouldReturnTrue" classname="com.bridgelabz.servicetest.ParkingLotServiceTest" time="0.001"/>
-  <testcase name="givenVehicle_WhenNotParked_ShouldNotBeUnParked" classname="com.bridgelabz.servicetest.ParkingLotServiceTest" time="0.0"/>
+  <testcase name="givenVehicle_WhenNotParked_ShouldNotBeUnParked" classname="com.bridgelabz.servicetest.ParkingLotServiceTest" time="0.001"/>
   <testcase name="givenVehicles_WhenExactParkingIsDone_ShouldReturnTrue" classname="com.bridgelabz.servicetest.ParkingLotServiceTest" time="0.001"/>
-  <testcase name="givenParkingNotLotFull_SecurityShouldNotBeCalled" classname="com.bridgelabz.servicetest.ParkingLotServiceTest" time="0.001"/>
+  <testcase name="givenParkingNotLotFull_SecurityShouldNotBeCalled" classname="com.bridgelabz.servicetest.ParkingLotServiceTest" time="0.002"/>
   <testcase name="givenVehicle_BeenParked_ShouldReturnTrue" classname="com.bridgelabz.servicetest.ParkingLotServiceTest" time="0.0"/>
   <testcase name="givenParkingLotFull_WhenVehicleUnParked_OwnerShouldRemoveFullSign" classname="com.bridgelabz.servicetest.ParkingLotServiceTest" time="0.001"/>
   <testcase name="givenVehicles_WhenParkingFull_ShouldThrowException" classname="com.bridgelabz.servicetest.ParkingLotServiceTest" time="0.001"/>
-  <testcase name="givenParkingLotFull_SecurityShouldBeCalled" classname="com.bridgelabz.servicetest.ParkingLotServiceTest" time="0.0"/>
+  <testcase name="givenParkingLotFull_SecurityShouldBeCalled" classname="com.bridgelabz.servicetest.ParkingLotServiceTest" time="0.001"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
