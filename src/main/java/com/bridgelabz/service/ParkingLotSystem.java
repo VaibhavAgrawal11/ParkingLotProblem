@@ -12,7 +12,7 @@ import java.util.Iterator;
 
 public class ParkingLotSystem implements Subject {
     ArrayList<Observer> observers = new ArrayList<Observer>();
-    ParkingAttendant attendant = new ParkingAttendant();
+    ParkingAttendant attendant;
     int counter = 0;
     ParkingLot parkingLot;
     int lotCapacity;
@@ -22,6 +22,7 @@ public class ParkingLotSystem implements Subject {
         this.lotCapacity = lotCapacity;
         parkingLot = new ParkingLot(lotCapacity);
         lotMap = parkingLot.getEmptyParkingLot();
+        attendant = new ParkingAttendant();
     }
 
     @Override
@@ -51,9 +52,9 @@ public class ParkingLotSystem implements Subject {
         return lotMap.containsValue(vehicle);
     }
 
-    public boolean unParkVehicle(Object vehicle) {
+    public boolean unParkVehicle(Object vehicle, Integer parkingSlot) {
         if (lotMap.containsValue(vehicle)) {
-            lotMap.remove(vehicle);
+            lotMap.put(parkingSlot, null);
             counter--;
             this.notifyObservers();
             return true;

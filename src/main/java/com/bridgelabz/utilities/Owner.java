@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 public class Owner implements Observer {
     private HashMap<Integer, Object> parkingLotMap;
+
     public enum Sign {PARKING_IS_FULL}
 
     private Sign sign;
@@ -30,8 +31,9 @@ public class Owner implements Observer {
 
     public Integer decideParkingSlot() {
         for (int i = 1; i <= parkingLotMap.size(); i++)
-            if (parkingLotMap.get(i) == null)
+            if (parkingLotMap.get(i) == null) {
                 return i;
+            }
         return null;
     }
 }

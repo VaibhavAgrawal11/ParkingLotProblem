@@ -12,11 +12,13 @@ import org.junit.Test;
 public class ParkingLotServiceTest {
     ParkingLotSystem parkingLotSystem = null;
     Object vehicle = null;
+    ParkingAttendant attendant = null;
 
     @Before
     public void setUp() throws Exception {
         parkingLotSystem = new ParkingLotSystem(100);
         vehicle = new Object();
+        attendant = new ParkingAttendant();
     }
 
     @Test
@@ -29,15 +31,17 @@ public class ParkingLotServiceTest {
     @Test
     public void givenVehicle_WhenUnParked_ShouldReturnTrue() throws ParkingLotException {
         parkingLotSystem.parkVehicle(vehicle);
-        boolean isUnParked = parkingLotSystem.unParkVehicle(vehicle);
+        Integer getSlot = attendant.getMyParkingSlot(vehicle);
+        boolean isUnParked = parkingLotSystem.unParkVehicle(vehicle, getSlot);
         Assert.assertTrue(isUnParked);
     }
 
     @Test
     public void givenVehicle_WhenNotParked_ShouldNotBeUnParked() {
-        boolean isUnParked = parkingLotSystem.unParkVehicle(vehicle);
+        boolean isUnParked = parkingLotSystem.unParkVehicle(vehicle,attendant.getMyParkingSlot(vehicle));
         Assert.assertFalse(isUnParked);
     }
+
 
     @Test
     public void givenVehicles_WhenParkingFull_ShouldThrowException() {
@@ -103,8 +107,7 @@ public class ParkingLotServiceTest {
         parkingLotSystem1.parkVehicle(vehicle);
         parkingLotSystem1.parkVehicle(new Object());
         parkingLotSystem1.parkVehicle(new Object());
-        parkingLotSystem1.unParkVehicle(vehicle);
+        parkingLotSystem1.unParkVehicle(vehicle,attendant.getMyParkingSlot(vehicle));
         Assert.assertEquals(owner.getSign(), null);
     }
-
 }
