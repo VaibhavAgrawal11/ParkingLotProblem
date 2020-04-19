@@ -3,7 +3,6 @@ package com.bridgelabz.service;
 import com.bridgelabz.exception.ParkingLotException;
 import com.bridgelabz.observer.Observer;
 import com.bridgelabz.observer.Subject;
-import com.bridgelabz.utilities.Owner;
 import com.bridgelabz.utilities.ParkingAttendant;
 import com.bridgelabz.utilities.ParkingLot;
 
@@ -13,7 +12,6 @@ import java.util.Iterator;
 
 public class ParkingLotSystem implements Subject {
     ArrayList<Observer> observers = new ArrayList<Observer>();
-    Owner owner = new Owner();
     ParkingAttendant attendant = new ParkingAttendant();
     int counter = 0;
     ParkingLot parkingLot;
@@ -23,7 +21,7 @@ public class ParkingLotSystem implements Subject {
     public ParkingLotSystem(int lotCapacity) {
         this.lotCapacity = lotCapacity;
         parkingLot = new ParkingLot(lotCapacity);
-        lotMap=parkingLot.getEmptyParkingLot();
+        lotMap = parkingLot.getEmptyParkingLot();
     }
 
     @Override
@@ -44,8 +42,7 @@ public class ParkingLotSystem implements Subject {
     public void parkVehicle(Object vehicle) throws ParkingLotException {
         if (counter >= lotCapacity)
             throw new ParkingLotException("Parking lot is full.");
-        owner.getUpdatedMap(lotMap);
-        lotMap.put(owner.decideParkingSlot(), vehicle);
+        lotMap = attendant.parkVehicle(vehicle, lotMap);
         counter++;
         this.notifyObservers();
     }

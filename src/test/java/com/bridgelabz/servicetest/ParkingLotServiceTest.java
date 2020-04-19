@@ -4,6 +4,7 @@ import com.bridgelabz.exception.ParkingLotException;
 import com.bridgelabz.service.ParkingLotSystem;
 import com.bridgelabz.utilities.AirportSecurityPersonal;
 import com.bridgelabz.utilities.Owner;
+import com.bridgelabz.utilities.ParkingAttendant;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,7 +60,7 @@ public class ParkingLotServiceTest {
         parkingLotSystem.parkVehicle(new Object());
         parkingLotSystem.parkVehicle(vehicle);
         boolean isParked = parkingLotSystem.isVehicleParked(vehicle);
-        Assert.assertEquals(true,isParked);
+        Assert.assertEquals(true, isParked);
     }
 
     @Test
@@ -81,7 +82,7 @@ public class ParkingLotServiceTest {
         parkingLotSystem1.parkVehicle(vehicle);
         parkingLotSystem1.parkVehicle(new Object());
         parkingLotSystem1.parkVehicle(new Object());
-        Assert.assertEquals(true,securityPersonal.redirectSecurityStaff());
+        Assert.assertEquals(true, securityPersonal.redirectSecurityStaff());
     }
 
     @Test
@@ -91,7 +92,7 @@ public class ParkingLotServiceTest {
         parkingLotSystem1.register(securityPersonal);
         parkingLotSystem1.parkVehicle(vehicle);
         parkingLotSystem1.parkVehicle(new Object());
-        Assert.assertEquals(false,securityPersonal.redirectSecurityStaff());
+        Assert.assertEquals(false, securityPersonal.redirectSecurityStaff());
     }
 
     @Test
@@ -105,4 +106,5 @@ public class ParkingLotServiceTest {
         parkingLotSystem1.unParkVehicle(vehicle);
         Assert.assertEquals(owner.getSign(), null);
     }
+
 }
