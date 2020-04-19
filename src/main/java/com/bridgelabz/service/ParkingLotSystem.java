@@ -42,9 +42,14 @@ public class ParkingLotSystem implements Subject {
 
     public void parkVehicle(Object vehicle) throws ParkingLotException {
         if (counter >= lotCapacity)
-            throw new ParkingLotException("Parking lot is full.");
+            throw new ParkingLotException("Parking lot is full.",
+                    ParkingLotException.ExceptionType.NO_PARKING_AVAILABLE);
+        if (lotMap.containsValue(vehicle))
+            throw new ParkingLotException("Vehicle already Parked",
+                    ParkingLotException.ExceptionType.VEHICLE_ALREADY_PRESENT);
         lotMap = attendant.parkVehicle(vehicle, lotMap);
         counter++;
+        System.out.println(lotMap);
         this.notifyObservers();
     }
 

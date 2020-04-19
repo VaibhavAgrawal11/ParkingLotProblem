@@ -38,10 +38,19 @@ public class ParkingLotServiceTest {
 
     @Test
     public void givenVehicle_WhenNotParked_ShouldNotBeUnParked() {
-        boolean isUnParked = parkingLotSystem.unParkVehicle(vehicle,attendant.getMyParkingSlot(vehicle));
+        boolean isUnParked = parkingLotSystem.unParkVehicle(vehicle, attendant.getMyParkingSlot(vehicle));
         Assert.assertFalse(isUnParked);
     }
 
+    @Test
+    public void givenVehicle_WhenAlreadyParked_ShouldNotBeParkedAgain() {
+        try {
+            parkingLotSystem.parkVehicle(vehicle);
+            parkingLotSystem.parkVehicle(vehicle);
+        } catch (ParkingLotException e) {
+            Assert.assertEquals(ParkingLotException.ExceptionType.VEHICLE_ALREADY_PRESENT, e.type);
+        }
+    }
 
     @Test
     public void givenVehicles_WhenParkingFull_ShouldThrowException() {
@@ -107,7 +116,7 @@ public class ParkingLotServiceTest {
         parkingLotSystem1.parkVehicle(vehicle);
         parkingLotSystem1.parkVehicle(new Object());
         parkingLotSystem1.parkVehicle(new Object());
-        parkingLotSystem1.unParkVehicle(vehicle,attendant.getMyParkingSlot(vehicle));
+        parkingLotSystem1.unParkVehicle(vehicle, attendant.getMyParkingSlot(vehicle));
         Assert.assertEquals(owner.getSign(), null);
     }
 }
