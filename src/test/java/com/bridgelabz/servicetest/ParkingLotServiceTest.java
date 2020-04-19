@@ -91,6 +91,17 @@ public class ParkingLotServiceTest {
     }
 
     @Test
+    public void givenLatestVehicle_ShouldParkAtTheNearestEmptySpace() throws ParkingLotException {
+        parkingLotSystem.parkVehicle(vehicle,1);
+        parkingLotSystem.parkVehicle(new Object(),2);
+        parkingLotSystem.parkVehicle(new Object(),2);
+        parkingLotSystem.unParkVehicle(vehicle,attendant.getMyParkingSlot(vehicle),2);
+        parkingLotSystem.parkVehicle(vehicle,3);
+        Integer parkingSlot= attendant.getMyParkingSlot(vehicle);
+        Assert.assertEquals((Integer) 1,parkingSlot);
+    }
+
+    @Test
     public void givenParkingLotFull_SecurityShouldBeCalled() throws ParkingLotException {
         AirportSecurityPersonal securityPersonal = new AirportSecurityPersonal();
         ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(3);

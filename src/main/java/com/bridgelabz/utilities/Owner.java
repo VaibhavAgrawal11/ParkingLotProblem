@@ -31,9 +31,8 @@ public class Owner implements Observer {
 
     public Integer decideParkingSlot() {
         for (int i = 1; i <= parkingLotMap.size(); i++)
-            if (parkingLotMap.get(i) == null) {
+            if (parkingLotMap.get(i) == null)
                 return i;
-            }
         return null;
     }
 }
