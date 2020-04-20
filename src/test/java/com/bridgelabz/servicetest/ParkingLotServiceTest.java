@@ -7,8 +7,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.HashMap;
-
 public class ParkingLotServiceTest {
     ParkingLotSystem parkingLotSystem = null;
     Vehicle vehicle = null;
@@ -147,12 +145,12 @@ public class ParkingLotServiceTest {
         parkingLotSystem1.parkVehicle(vehicle, 1);
         parkingLotSystem1.parkVehicle(new Vehicle(Vehicle.Driver.NORMAL), 2);
         parkingLotSystem1.parkVehicle(new Vehicle(Vehicle.Driver.NORMAL), 2);
-        parkingLotSystem1.parkVehicle(new Vehicle(Vehicle.Driver.NORMAL),3);
+        parkingLotSystem1.parkVehicle(new Vehicle(Vehicle.Driver.NORMAL), 3);
         boolean isUnParked = parkingLotSystem1.unParkVehicle(vehicle,
                 attendant.getMyParkingSlot(vehicle),
                 attendant.getLotNumber(vehicle),
                 3);
-        Assert.assertEquals(true,isUnParked);
+        Assert.assertEquals(true, isUnParked);
     }
 
     @Test
@@ -162,6 +160,17 @@ public class ParkingLotServiceTest {
         parkingLotSystem1.parkVehicle(vehicle, 2);
         Integer getParkingLot = attendant.getLotNumber(vehicle);
         Integer getParkingSlot = attendant.getMyParkingSlot(vehicle);
-        Assert.assertEquals("1 1",getParkingLot+" "+getParkingSlot);
+        Assert.assertEquals("1 1", getParkingLot + " " + getParkingSlot);
+    }
+
+    @Test
+    public void givenVehicleTypeIsLarge_ShouldParkedAtMostFreeSpace() throws ParkingLotException {
+        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(4, 2);
+        Vehicle vehicle1 = new Vehicle(Vehicle.VehicleType.LARGE);
+        parkingLotSystem1.parkVehicle(vehicle, 1);
+        parkingLotSystem1.parkVehicle(vehicle1, 2);
+        Integer getParkingLot = attendant.getLotNumber(vehicle1);
+        Integer getParkingSlot = attendant.getMyParkingSlot(vehicle1);
+        Assert.assertEquals("1 1", getParkingLot + " " + getParkingSlot);
     }
 }
