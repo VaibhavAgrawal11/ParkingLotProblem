@@ -3,10 +3,7 @@ package com.bridgelabz.service;
 import com.bridgelabz.exception.ParkingLotException;
 import com.bridgelabz.observer.Observer;
 import com.bridgelabz.observer.Subject;
-import com.bridgelabz.utilities.ParkingAttendant;
-import com.bridgelabz.utilities.ParkingBill;
-import com.bridgelabz.utilities.ParkingLot;
-import com.bridgelabz.utilities.Vehicle;
+import com.bridgelabz.utilities.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,9 +16,10 @@ public class ParkingLotSystem implements Subject {
     ParkingBill parkingBill = new ParkingBill();
     int counter = 0;
     ParkingLot parkingLot;
+    PoliceDepartment policeDepartment;
     int lotCapacity;
     int lotSize;
-    HashMap<Integer, HashMap> lotMaps = new HashMap<Integer, HashMap>();
+    public HashMap<Integer, HashMap> lotMaps = new HashMap<Integer, HashMap>();
 
     public ParkingLotSystem(int lotCapacity, int lotSize) {
         this.lotSize = lotSize;
@@ -32,6 +30,7 @@ public class ParkingLotSystem implements Subject {
             lotMaps.put(i, map);
         }
         attendant = new ParkingAttendant();
+        policeDepartment =new PoliceDepartment(this);
     }
 
     public void register(Observer obj) {
