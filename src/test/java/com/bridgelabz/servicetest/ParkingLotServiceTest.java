@@ -141,4 +141,18 @@ public class ParkingLotServiceTest {
         parkingLotSystem.unParkVehicle(vehicle, parkingSlot, 1, 4);
         Assert.assertEquals(7.5, parkingBill.generateParkingBill(), 0);
     }
+
+    @Test
+    public void givenMultipleParkingLots_WhenVehicleUnParked_ShouldGetLotNumber() throws ParkingLotException {
+        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(4, 2);
+        parkingLotSystem1.parkVehicle(vehicle, 1);
+        parkingLotSystem1.parkVehicle(new Object(), 2);
+        parkingLotSystem1.parkVehicle(new Object(), 2);
+        parkingLotSystem1.parkVehicle(new Object(),3);
+        boolean isUnParked = parkingLotSystem1.unParkVehicle(vehicle,
+                attendant.getMyParkingSlot(vehicle),
+                attendant.getLotNumber(vehicle),
+                3);
+        Assert.assertEquals(true,isUnParked);
+    }
 }
