@@ -6,6 +6,7 @@ import com.bridgelabz.observer.Subject;
 import com.bridgelabz.utilities.ParkingAttendant;
 import com.bridgelabz.utilities.ParkingBill;
 import com.bridgelabz.utilities.ParkingLot;
+import com.bridgelabz.utilities.Vehicle;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +28,7 @@ public class ParkingLotSystem implements Subject {
         this.lotCapacity = lotCapacity;
         parkingLot = new ParkingLot(lotCapacity);
         for (int i = 1; i <= lotSize; i++) {
-            HashMap<Integer, Object> map = parkingLot.getEmptyParkingLot();
+            HashMap<Integer, Vehicle> map = parkingLot.getEmptyParkingLot();
             lotMaps.put(i, map);
         }
         attendant = new ParkingAttendant();
@@ -46,7 +47,7 @@ public class ParkingLotSystem implements Subject {
         }
     }
 
-    public void parkVehicle(Object vehicle, int arrivingHour) throws ParkingLotException {
+    public void parkVehicle(Vehicle vehicle, int arrivingHour) throws ParkingLotException {
         if (counter >= lotCapacity * lotSize)
             throw new ParkingLotException("Parking lot is full.",
                     ParkingLotException.ExceptionType.NO_PARKING_AVAILABLE);
@@ -65,7 +66,7 @@ public class ParkingLotSystem implements Subject {
         this.notifyObservers();
     }
 
-    public boolean isVehicleParked(Object vehicle) {
+    public boolean isVehicleParked(Vehicle vehicle) {
         for (HashMap map : lotMaps.values()) {
             if (map.containsValue(vehicle))
                 return true;
@@ -73,7 +74,7 @@ public class ParkingLotSystem implements Subject {
         return false;
     }
 
-    public boolean unParkVehicle(Object vehicle, Integer parkingSlot, Integer parkingLotNumber, int departingHour) {
+    public boolean unParkVehicle(Vehicle vehicle, Integer parkingSlot, Integer parkingLotNumber, int departingHour) {
         if (lotMaps.get(parkingLotNumber).containsValue(vehicle)) {
             lotMaps.get(parkingLotNumber).put(parkingSlot, null);
             counter--;

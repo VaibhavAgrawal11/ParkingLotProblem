@@ -5,7 +5,7 @@ import com.bridgelabz.observer.Observer;
 import java.util.HashMap;
 
 public class Owner implements Observer {
-    private HashMap<Integer, Object> parkingLotMap;
+    private HashMap<Integer, Vehicle> parkingLotMap;
 
     public enum Sign {PARKING_IS_FULL}
 
@@ -25,7 +25,7 @@ public class Owner implements Observer {
         this.sign = sign;
     }
 
-    public void getUpdatedMap(HashMap<Integer, Object> parkingLotMap) {
+    public void getUpdatedMap(HashMap<Integer, Vehicle> parkingLotMap) {
         this.parkingLotMap = parkingLotMap;
     }
 
