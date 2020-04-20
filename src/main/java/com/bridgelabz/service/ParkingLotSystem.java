@@ -10,6 +10,7 @@ import com.bridgelabz.utilities.ParkingLot;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ParkingLotSystem implements Subject {
     ArrayList<Observer> observers = new ArrayList<Observer>();
@@ -18,23 +19,26 @@ public class ParkingLotSystem implements Subject {
     int counter = 0;
     ParkingLot parkingLot;
     int lotCapacity;
-    HashMap<Integer, Object> lotMap;
+    int lotSize;
+    HashMap<Integer, HashMap> lotMaps = new HashMap<Integer, HashMap>();
 
-    public ParkingLotSystem(int lotCapacity) {
+    public ParkingLotSystem(int lotCapacity, int lotSize) {
+        this.lotSize = lotSize;
         this.lotCapacity = lotCapacity;
         parkingLot = new ParkingLot(lotCapacity);
-        lotMap = parkingLot.getEmptyParkingLot();
+        for (int i = 1; i <= lotSize; i++) {
+            HashMap<Integer, Object> map = parkingLot.getEmptyParkingLot();
+            lotMaps.put(i, map);
+        }
         attendant = new ParkingAttendant();
     }
 
-    @Override
     public void register(Observer obj) {
         observers.add(obj);
     }
 
     @Override
     public void notifyObservers() {
-
         for (Iterator<Observer> it =
              observers.iterator(); it.hasNext(); ) {
             Observer o = it.next();
@@ -43,25 +47,35 @@ public class ParkingLotSystem implements Subject {
     }
 
     public void parkVehicle(Object vehicle, int arrivingHour) throws ParkingLotException {
-        if (counter >= lotCapacity)
+        if (counter >= lotCapacity * lotSize)
             throw new ParkingLotException("Parking lot is full.",
                     ParkingLotException.ExceptionType.NO_PARKING_AVAILABLE);
-        if (lotMap.containsValue(vehicle))
-            throw new ParkingLotException("Vehicle already Parked",
+        AtomicBoolean vehicleCheck = new AtomicBoolean(false);
+        lotMaps.values().stream().forEach(hashMap -> {
+            if (hashMap.containsValue(vehicle)) {
+                vehicleCheck.set(true);
+            }
+        });
+        if (vehicleCheck.get())
+            throw new ParkingLotException("Vehicle id already present",
                     ParkingLotException.ExceptionType.VEHICLE_ALREADY_PRESENT);
-        lotMap = attendant.parkVehicle(vehicle, lotMap);
+        lotMaps = attendant.parkVehicle(vehicle, lotMaps);
         counter++;
         parkingBill.arrivingHour(arrivingHour);
         this.notifyObservers();
     }
 
     public boolean isVehicleParked(Object vehicle) {
-        return lotMap.containsValue(vehicle);
+        for (HashMap map : lotMaps.values()) {
+            if (map.containsValue(vehicle))
+                return true;
+        }
+        return false;
     }
 
-    public boolean unParkVehicle(Object vehicle, Integer parkingSlot, int departingHour) {
-        if (lotMap.containsValue(vehicle)) {
-            lotMap.put(parkingSlot, null);
+    public boolean unParkVehicle(Object vehicle, Integer parkingSlot, Integer parkingLotNumber, int departingHour) {
+        if (lotMaps.get(parkingLotNumber).containsValue(vehicle)) {
+            lotMaps.get(parkingLotNumber).put(parkingSlot, null);
             counter--;
             parkingBill.departureHour(departingHour);
             this.notifyObservers();

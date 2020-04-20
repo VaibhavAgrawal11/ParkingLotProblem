@@ -13,7 +13,7 @@ public class ParkingBill {
         this.departingHour = departingHour;
     }
 
-    public double generateParkingBill(){
-        return (this.departingHour-this.arrivingHour)*COST_PER_HOUR;
+    public double generateParkingBill() {
+        return (this.departingHour - this.arrivingHour) * COST_PER_HOUR;
     }
 }
