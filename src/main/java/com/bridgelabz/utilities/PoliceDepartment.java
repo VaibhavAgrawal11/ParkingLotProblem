@@ -2,6 +2,8 @@ package com.bridgelabz.utilities;
 
 import com.bridgelabz.service.ParkingLotSystem;
 
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +14,7 @@ public class PoliceDepartment {
 
     private final ParkingLotSystem parkingLotSystem;
     List colouredVehicle = new ArrayList();
+    List<Vehicle> vehicleRecent = new ArrayList<Vehicle>();
 
     public PoliceDepartment(ParkingLotSystem parkingLotSystem) {
         this.parkingLotSystem = parkingLotSystem;
@@ -75,7 +78,22 @@ public class PoliceDepartment {
             }
             counter++;
         }
-        System.out.println(vehicleSlot);
         return vehicleSlot;
     }
+
+    public List<Vehicle> getRecentVehicle(int currentHour, int currentMin) {
+        LocalTime l2 = LocalTime.of(currentHour, currentMin);
+        for (HashMap<Integer, Vehicle> parkingLotMap : parkingLotSystem.lotMaps.values()) {
+            while (parkingLotMap.values().remove(null)) ;
+            for (Integer k : parkingLotMap.keySet()) {
+                LocalTime l1 = parkingLotMap.get(k).getParkTime();
+                if (Duration.between(l1, l2).toMinutes() <= 30 && Duration.between(l1, l2).toMinutes() >= 0) {
+                    vehicleRecent.add(parkingLotMap.get(k));
+                }
+            }
+        }
+        return vehicleRecent;
+    }
+
+
 }

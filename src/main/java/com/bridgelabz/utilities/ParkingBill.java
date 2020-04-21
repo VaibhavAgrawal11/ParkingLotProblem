@@ -1,19 +1,12 @@
 package com.bridgelabz.utilities;
 
+import java.time.Duration;
+
 public class ParkingBill {
-    private final double COST_PER_HOUR = 2.5;
-    private static int arrivingHour;
-    private static int departingHour;
 
-    public void arrivingHour(int arrivingHour) {
-        this.arrivingHour = arrivingHour;
-    }
+    private static final double COST_PER_HOUR = 2.5;
 
-    public void departureHour(int departingHour) {
-        this.departingHour = departingHour;
-    }
-
-    public double generateParkingBill() {
-        return (this.departingHour - this.arrivingHour) * COST_PER_HOUR;
+    public static double generateParkingBill(Vehicle vehicle) {
+        return (Duration.between(vehicle.arrivalTime, vehicle.departalTime).toHours()) * COST_PER_HOUR;
     }
 }

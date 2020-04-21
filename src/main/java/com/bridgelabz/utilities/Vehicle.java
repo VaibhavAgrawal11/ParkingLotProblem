@@ -1,10 +1,22 @@
 package com.bridgelabz.utilities;
 
+import com.bridgelabz.service.ParkingLotSystem;
+
+import java.time.LocalTime;
+
 public class Vehicle {
+
     public String colour = "white";
     public String plateNumber = "XX00 XX 0000";
     public String carCompany = "Toyota";
     public String attendantName;
+    public LocalTime arrivalTime;
+    public LocalTime departalTime;
+
+
+    public LocalTime getParkTime() {
+        return arrivalTime;
+    }
 
     public enum Driver {NORMAL, HANDICAP}
 
@@ -16,6 +28,7 @@ public class Vehicle {
     public Vehicle(Driver driver) {
         this.driver = driver;
     }
+
 
     public Vehicle(VehicleType type) {
         this.type = type;

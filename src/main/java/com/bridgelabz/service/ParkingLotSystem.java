@@ -5,6 +5,7 @@ import com.bridgelabz.observer.Observer;
 import com.bridgelabz.observer.Subject;
 import com.bridgelabz.utilities.*;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -13,13 +14,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ParkingLotSystem implements Subject {
     ArrayList<Observer> observers = new ArrayList<Observer>();
     ParkingAttendant attendant;
-    ParkingBill parkingBill = new ParkingBill();
     int counter = 0;
     ParkingLot parkingLot;
     PoliceDepartment policeDepartment;
     int lotCapacity;
     int lotSize;
     public HashMap<Integer, HashMap> lotMaps = new HashMap<Integer, HashMap>();
+    static LocalTime arrivalTime;
+    static LocalTime departalTime;
 
     public ParkingLotSystem(int lotCapacity, int lotSize) {
         this.lotSize = lotSize;
@@ -46,7 +48,7 @@ public class ParkingLotSystem implements Subject {
         }
     }
 
-    public void parkVehicle(Vehicle vehicle, int arrivingHour) throws ParkingLotException {
+    public void parkVehicle(Vehicle vehicle, int arrivingHour, int arrivingMin) throws ParkingLotException {
         if (counter >= lotCapacity * lotSize)
             throw new ParkingLotException("Parking lot is full.",
                     ParkingLotException.ExceptionType.NO_PARKING_AVAILABLE);
@@ -61,7 +63,8 @@ public class ParkingLotSystem implements Subject {
                     ParkingLotException.ExceptionType.VEHICLE_ALREADY_PRESENT);
         lotMaps = attendant.parkVehicle(vehicle, lotMaps);
         counter++;
-        parkingBill.arrivingHour(arrivingHour);
+        arrivalTime = LocalTime.of(arrivingHour, arrivingMin);
+        vehicle.arrivalTime = arrivalTime;
         this.notifyObservers();
     }
 
@@ -73,11 +76,12 @@ public class ParkingLotSystem implements Subject {
         return false;
     }
 
-    public boolean unParkVehicle(Vehicle vehicle, Integer parkingSlot, Integer parkingLotNumber, int departingHour) {
+    public boolean unParkVehicle(Vehicle vehicle, Integer parkingSlot, Integer parkingLotNumber, int departingHour, int departingMin) {
         if (lotMaps.get(parkingLotNumber).containsValue(vehicle)) {
+            departalTime = LocalTime.of(departingHour, departingMin);
+            vehicle.departalTime = departalTime;
             lotMaps.get(parkingLotNumber).put(parkingSlot, null);
             counter--;
-            parkingBill.departureHour(departingHour);
             this.notifyObservers();
             return true;
         }
