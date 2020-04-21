@@ -2,12 +2,19 @@ package com.bridgelabz.utilities;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class ParkingAttendant {
+    public String attendantName;
     static HashMap<Integer, HashMap> lotMaps;
     Owner owner = new Owner();
     static HashMap<Integer, Vehicle> currentMap = new HashMap<>();
+
+    public ParkingAttendant(String attendantName) {
+        this.attendantName = attendantName;
+    }
+
+    public ParkingAttendant() {
+    }
 
     public Integer getMyParkingSlot(Vehicle vehicle) {
         Integer lotNumber = getLotNumber(vehicle);
@@ -43,11 +50,11 @@ public class ParkingAttendant {
         this.lotMaps = lotMaps;
         for (HashMap<Integer, Vehicle> map : this.lotMaps.values()) {
             if (map.containsValue(null)) {
-                Integer counter =0;
+                Integer counter = 0;
                 for (Vehicle slots : map.values()) {
                     counter++;
                     if (slots == null) {
-                        map.put(counter,vehicle);
+                        map.put(counter, vehicle);
                         System.out.println(this.lotMaps);
                         return this.lotMaps;
                     }

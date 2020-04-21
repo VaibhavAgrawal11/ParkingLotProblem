@@ -19,7 +19,7 @@ public class ParkingLotServiceTest {
     public void setUp() throws Exception {
         parkingLotSystem = new ParkingLotSystem(100, 1);
         vehicle = new Vehicle(Vehicle.Driver.NORMAL);
-        attendant = new ParkingAttendant();
+        attendant = new ParkingAttendant("xyz");
         parkingBill = new ParkingBill();
     }
 
@@ -182,12 +182,27 @@ public class ParkingLotServiceTest {
         Vehicle vehicle1 = new Vehicle("white");
         parkingLotSystem1.parkVehicle(vehicle, 1);
         parkingLotSystem1.parkVehicle(vehicle1, 2);
-        parkingLotSystem1.parkVehicle(new Vehicle("black"),1);
-        parkingLotSystem1.parkVehicle(new Vehicle("white"),1);
-        parkingLotSystem1.parkVehicle(new Vehicle("black"),1);
-        parkingLotSystem1.parkVehicle(new Vehicle("red"),1);
+        parkingLotSystem1.parkVehicle(new Vehicle("black"), 1);
+        parkingLotSystem1.parkVehicle(new Vehicle("white"), 1);
+        parkingLotSystem1.parkVehicle(new Vehicle("black"), 1);
+        parkingLotSystem1.parkVehicle(new Vehicle("red"), 1);
         PoliceDepartment police = new PoliceDepartment(parkingLotSystem1);
         List list = police.getColouredVehicleList("white");
-        Assert.assertEquals(3,list.size());
+        Assert.assertEquals(3, list.size());
+    }
+
+    @Test
+    public void givenVehicle_WhenCompanyNameProvided_ShouldReturnListOfVehicles() throws ParkingLotException {
+        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(8, 2);
+        Vehicle vehicle1 = new Vehicle("blue", "GJ06KL7860", "Toyota", attendant.attendantName);
+        parkingLotSystem1.parkVehicle(vehicle, 1);
+        parkingLotSystem1.parkVehicle(vehicle1, 2);
+        parkingLotSystem1.parkVehicle(new Vehicle("blue", "GJ06KL7860", "Toyota", attendant.attendantName), 1);
+        parkingLotSystem1.parkVehicle(new Vehicle("red", "GJ06KL1456", "Toyota", attendant.attendantName), 1);
+        parkingLotSystem1.parkVehicle(new Vehicle("blue", "GJ06KL9008", "Toyota", attendant.attendantName), 1);
+        parkingLotSystem1.parkVehicle(new Vehicle("white", "GJ06KL3845", "Toyota", attendant.attendantName), 1);
+        PoliceDepartment police = new PoliceDepartment(parkingLotSystem1);
+        List list = police.getDetailsOfParticularTypeOfVehicle("Toyota", "blue");
+        Assert.assertEquals(3, list.size());
     }
 }

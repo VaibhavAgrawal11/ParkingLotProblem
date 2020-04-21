@@ -30,7 +30,7 @@ public class ParkingLotSystem implements Subject {
             lotMaps.put(i, map);
         }
         attendant = new ParkingAttendant();
-        policeDepartment =new PoliceDepartment(this);
+        policeDepartment = new PoliceDepartment(this);
     }
 
     public void register(Observer obj) {
