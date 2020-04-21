@@ -46,7 +46,7 @@ public class PoliceDepartment {
                     .collect(Collectors.toList());
             for (int i = 0; i < vehicleList.size(); i++) {
                 String vehicleDetail = "PN:" + vehicleHashMap.get(vehicleList.get(i)).plateNumber + "  " +
-                        "valletName:" + vehicleHashMap.get(vehicleList.get(i)).attendantName + "  " +
+                        "valetName:" + vehicleHashMap.get(vehicleList.get(i)).attendantName + "  " +
                         "L:" + parkingLot + "  " +
                         vehicleList.get(i);
                 vehicleDetails.add(vehicleDetail);
@@ -55,5 +55,27 @@ public class PoliceDepartment {
         }
         System.out.println(vehicleDetails);
         return vehicleDetails;
+    }
+
+    public List<String> getSecurityWhenGivenExpensiveCarCountIncreases(String carCompany) {
+        List colouredVehicle = new ArrayList<String>();
+        List<String> vehicleSlot = new ArrayList<>();
+        int counter = 1;
+        for (HashMap<Integer, Vehicle> vehicleHashMap : parkingLotSystem.lotMaps.values()) {
+            while (vehicleHashMap.values().remove(null)) ;
+            colouredVehicle = vehicleHashMap.entrySet()
+                    .stream()
+                    .filter(map -> carCompany.equals(map.getValue().carCompany))
+                    .map(Map.Entry::getKey)
+                    .collect(Collectors.toList());
+
+            for (int i = 0; i < colouredVehicle.size(); i++) {
+                String lot = counter + " " + colouredVehicle.get(i);
+                vehicleSlot.add(lot);
+            }
+            counter++;
+        }
+        System.out.println(vehicleSlot);
+        return vehicleSlot;
     }
 }

@@ -205,4 +205,19 @@ public class ParkingLotServiceTest {
         List list = police.getDetailsOfParticularTypeOfVehicle("Toyota", "blue");
         Assert.assertEquals(3, list.size());
     }
+
+    @Test
+    public void givenVehicle_WhenBMW_ShouldReturnList() throws ParkingLotException {
+        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(8, 3);
+        Vehicle vehicle1 = new Vehicle("blue", "GJ06KL7860", "BMW", attendant.attendantName);
+        parkingLotSystem1.parkVehicle(vehicle, 1);
+        parkingLotSystem1.parkVehicle(vehicle1, 2);
+        parkingLotSystem1.parkVehicle(new Vehicle("blue", "GJ06KL7860", "Swift", attendant.attendantName), 1);
+        parkingLotSystem1.parkVehicle(new Vehicle("red", "GJ06KL1456", "BMW", attendant.attendantName), 1);
+        parkingLotSystem1.parkVehicle(new Vehicle("blue", "GJ06KL9008", "Toyota", attendant.attendantName), 1);
+        parkingLotSystem1.parkVehicle(new Vehicle("white", "GJ06KL3845", "BMW", attendant.attendantName), 1);
+        PoliceDepartment police = new PoliceDepartment(parkingLotSystem1);
+        List list = police.getSecurityWhenGivenExpensiveCarCountIncreases("BMW");
+        Assert.assertEquals(3, list.size());
+    }
 }
