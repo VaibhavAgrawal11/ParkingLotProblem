@@ -4,19 +4,26 @@ import java.util.HashMap;
 
 public class ParkingLot {
     public int lotCapacity;
+    public int rowCapacity;
+    int rowNumbs;
+    HashMap<Integer, Vehicle> row = new HashMap<>();
+    HashMap<Character, HashMap<Integer, Vehicle>> rowMap = new HashMap<>();
 
-    HashMap<Integer, Vehicle> parkingLotMap;
-
-    public ParkingLot(int lotCapacity) {
+    public ParkingLot(int lotCapacity, int rowCapacity) {
         this.lotCapacity = lotCapacity;
+        this.rowCapacity = rowCapacity;
+        this.rowNumbs = lotCapacity / rowCapacity;
     }
 
-    public HashMap<Integer, Vehicle> getEmptyParkingLot() {
-        parkingLotMap = new HashMap<>();
-        for (int i = 1; i <= lotCapacity; i++) {
-            parkingLotMap.put(i, null);
+    public HashMap<Character, HashMap<Integer, Vehicle>> getEmptyParkingLot() {
+        Character character = 'A';
+        for (int i = 1; i <= rowNumbs; i++) {
+            for (int j = 1; j <= rowCapacity; j++) {
+                row.put(j, null);
+            }
+            rowMap.put(character, row);
+            character++;
         }
-        return parkingLotMap;
+        return rowMap;
     }
-
 }

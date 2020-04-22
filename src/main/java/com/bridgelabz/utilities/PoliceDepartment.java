@@ -22,14 +22,16 @@ public class PoliceDepartment {
 
     public List getColouredVehicleList(String colour) {
         List colouredVehicle = new ArrayList<String>();
-        for (HashMap<Integer, Vehicle> vehicleHashMap : parkingLotSystem.lotMaps.values()) {
-            while (vehicleHashMap.values().remove(null)) ;
-            colouredVehicle = vehicleHashMap.entrySet()
-                    .stream()
-                    .filter(map -> colour.equals(map.getValue().colour))
-                    .map(Map.Entry::getKey)
-                    .collect(Collectors.toList());
-            this.colouredVehicle.addAll(colouredVehicle);
+        for (HashMap<Character, HashMap<Integer, Vehicle>> mapHashMap : parkingLotSystem.lotMaps.values()) {
+            for (HashMap<Integer, Vehicle> vehicleHashMap : mapHashMap.values()) {
+                while (vehicleHashMap.values().remove(null)) ;
+                colouredVehicle = vehicleHashMap.entrySet()
+                        .stream()
+                        .filter(map -> colour.equals(map.getValue().colour))
+                        .map(Map.Entry::getKey)
+                        .collect(Collectors.toList());
+                this.colouredVehicle.addAll(colouredVehicle);
+            }
         }
         return this.colouredVehicle;
     }
@@ -37,24 +39,26 @@ public class PoliceDepartment {
     public List getDetailsOfParticularTypeOfVehicle(String carCompany, String colour) {
         List<String> vehicleDetails = new ArrayList<>();
         int parkingLot = 1;
-        for (HashMap<Integer, Vehicle> vehicleHashMap : parkingLotSystem.lotMaps.values()) {
-            List vehicleList = new ArrayList<String>();
-            while (vehicleHashMap.values().remove(null)) ;
-            vehicleList = vehicleHashMap.entrySet()
-                    .stream()
-                    .filter(x -> {
-                        return (colour.equals(x.getValue().colour) && carCompany.equals(x.getValue().carCompany));
-                    })
-                    .map(Map.Entry::getKey)
-                    .collect(Collectors.toList());
-            for (int i = 0; i < vehicleList.size(); i++) {
-                String vehicleDetail = "PN:" + vehicleHashMap.get(vehicleList.get(i)).plateNumber + "  " +
-                        "valetName:" + vehicleHashMap.get(vehicleList.get(i)).attendantName + "  " +
-                        "L:" + parkingLot + "  " +
-                        vehicleList.get(i);
-                vehicleDetails.add(vehicleDetail);
+        for (HashMap<Character, HashMap<Integer, Vehicle>> mapHashMap : parkingLotSystem.lotMaps.values()) {
+            for (HashMap<Integer, Vehicle> vehicleHashMap : mapHashMap.values()) {
+                List vehicleList = new ArrayList<String>();
+                while (vehicleHashMap.values().remove(null)) ;
+                vehicleList = vehicleHashMap.entrySet()
+                        .stream()
+                        .filter(x -> {
+                            return (colour.equals(x.getValue().colour) && carCompany.equals(x.getValue().carCompany));
+                        })
+                        .map(Map.Entry::getKey)
+                        .collect(Collectors.toList());
+                for (int i = 0; i < vehicleList.size(); i++) {
+                    String vehicleDetail = "PN:" + vehicleHashMap.get(vehicleList.get(i)).plateNumber + "  " +
+                            "valetName:" + vehicleHashMap.get(vehicleList.get(i)).attendantName + "  " +
+                            "L:" + parkingLot + "  " +
+                            vehicleList.get(i);
+                    vehicleDetails.add(vehicleDetail);
+                }
+                parkingLot++;
             }
-            parkingLot++;
         }
         System.out.println(vehicleDetails);
         return vehicleDetails;
@@ -64,36 +68,38 @@ public class PoliceDepartment {
         List colouredVehicle = new ArrayList<String>();
         List<String> vehicleSlot = new ArrayList<>();
         int counter = 1;
-        for (HashMap<Integer, Vehicle> vehicleHashMap : parkingLotSystem.lotMaps.values()) {
-            while (vehicleHashMap.values().remove(null)) ;
-            colouredVehicle = vehicleHashMap.entrySet()
-                    .stream()
-                    .filter(map -> carCompany.equals(map.getValue().carCompany))
-                    .map(Map.Entry::getKey)
-                    .collect(Collectors.toList());
+        for (HashMap<Character, HashMap<Integer, Vehicle>> mapHashMap : parkingLotSystem.lotMaps.values()) {
+            for (HashMap<Integer, Vehicle> vehicleHashMap : mapHashMap.values()) {
+                while (vehicleHashMap.values().remove(null)) ;
+                colouredVehicle = vehicleHashMap.entrySet()
+                        .stream()
+                        .filter(map -> carCompany.equals(map.getValue().carCompany))
+                        .map(Map.Entry::getKey)
+                        .collect(Collectors.toList());
 
-            for (int i = 0; i < colouredVehicle.size(); i++) {
-                String lot = counter + " " + colouredVehicle.get(i);
-                vehicleSlot.add(lot);
+                for (int i = 0; i < colouredVehicle.size(); i++) {
+                    String lot = counter + " " + colouredVehicle.get(i);
+                    vehicleSlot.add(lot);
+                }
+                counter++;
             }
-            counter++;
         }
         return vehicleSlot;
     }
 
     public List<Vehicle> getRecentVehicle(int currentHour, int currentMin) {
         LocalTime l2 = LocalTime.of(currentHour, currentMin);
-        for (HashMap<Integer, Vehicle> parkingLotMap : parkingLotSystem.lotMaps.values()) {
-            while (parkingLotMap.values().remove(null)) ;
-            for (Integer k : parkingLotMap.keySet()) {
-                LocalTime l1 = parkingLotMap.get(k).getParkTime();
-                if (Duration.between(l1, l2).toMinutes() <= 30 && Duration.between(l1, l2).toMinutes() >= 0) {
-                    vehicleRecent.add(parkingLotMap.get(k));
+        for (HashMap<Character, HashMap<Integer, Vehicle>> parkingLotMap : parkingLotSystem.lotMaps.values()) {
+            for (HashMap<Integer, Vehicle> rowMap : parkingLotMap.values()) {
+                while (rowMap.values().remove(null)) ;
+                for (Integer k : rowMap.keySet()) {
+                    LocalTime l1 = rowMap.get(k).getParkTime();
+                    if (Duration.between(l1, l2).toMinutes() <= 30 && Duration.between(l1, l2).toMinutes() >= 0) {
+                        vehicleRecent.add(rowMap.get(k));
+                    }
                 }
             }
         }
         return vehicleRecent;
     }
-
-
 }

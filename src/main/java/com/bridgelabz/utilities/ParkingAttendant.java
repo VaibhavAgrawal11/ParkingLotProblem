@@ -3,11 +3,13 @@ package com.bridgelabz.utilities;
 import java.util.Collections;
 import java.util.HashMap;
 
+import static javax.swing.UIManager.put;
+
 public class ParkingAttendant {
     public String attendantName;
-    static HashMap<Integer, HashMap> lotMaps;
+    static HashMap<Integer, HashMap<Character, HashMap<Integer, Vehicle>>> lotMaps = new HashMap<>();
+
     Owner owner = new Owner();
-    static HashMap<Integer, Vehicle> currentMap = new HashMap<>();
 
     public ParkingAttendant(String attendantName) {
         this.attendantName = attendantName;
@@ -16,64 +18,81 @@ public class ParkingAttendant {
     public ParkingAttendant() {
     }
 
-    public Integer getMyParkingSlot(Vehicle vehicle) {
-        Integer lotNumber = getLotNumber(vehicle);
-        for (int i = 1; i <= this.lotMaps.get(lotNumber).size(); i++)
-            if (this.lotMaps.get(lotNumber).get(i) == vehicle)
-                return i;
-        return null;
-    }
-
-    public Integer getLotNumber(Vehicle vehicle) {
-        int count = 1;
-        for (HashMap<Integer, Object> map : lotMaps.values()) {
-            if (map.containsValue(vehicle))
-                return count;
-            count++;
+    public String getSlotNumber(Vehicle vehicle) {
+        int lotNumber = 1;
+        char rowNumber = 'A';
+        for (HashMap<Character, HashMap<Integer, Vehicle>> maps : lotMaps.values()) {
+            for (HashMap map : maps.values()) {
+                if (map.containsValue(vehicle)) {
+                    for (int slotNUmber = 1; slotNUmber <= map.size(); slotNUmber++)
+                        if (map.get(slotNUmber) == vehicle)
+                            return lotNumber + " " + rowNumber + " " + slotNUmber;
+                }
+                rowNumber++;
+            }
+            lotNumber++;
         }
         return null;
     }
 
-    public HashMap<Integer, HashMap> parkVehicle(Vehicle vehicle, HashMap<Integer, HashMap> lotMaps) {
+    public HashMap<Integer, HashMap<Character, HashMap<Integer, Vehicle>>>
+    parkVehicle(Vehicle vehicle, HashMap<Integer, HashMap<Character, HashMap<Integer, Vehicle>>> lotMaps) {
+        System.out.println(lotMaps);
+        System.out.println(lotMaps.get(1).get('A').get(1));
+
         if (vehicle.driver.equals(Vehicle.Driver.HANDICAP))
             return parkAtNearestLocation(vehicle, lotMaps);
-        this.lotMaps = lotMaps;
-        Integer lotNumber = getCurrentMap(lotMaps);
-        this.currentMap = lotMaps.get(lotNumber);
-        owner.getUpdatedMap(this.currentMap);
-        this.currentMap.put(owner.decideParkingSlot(), vehicle);
-        this.lotMaps.put(lotNumber, this.currentMap);
-        return ParkingAttendant.this.lotMaps;
+        String[] getLotAndRow = getCurrentMap(lotMaps).split(" ");
+        Integer lotNumber = Integer.valueOf(getLotAndRow[0]);
+
+        HashMap<Character, HashMap<Integer, Vehicle>> rowMaps = lotMaps.get(lotNumber);
+        Character rowChar = getLotAndRow[1].toCharArray()[0];
+
+
+
+        HashMap<Character, HashMap<Integer, Vehicle>> mapHashMap = lotMaps.get(lotNumber);
+
+        HashMap<Integer, Vehicle> mapRow = mapHashMap.get(rowChar);
+        owner.getUpdatedMap(mapRow);
+        mapRow.put(owner.decideParkingSlot(), vehicle);
+        return lotMaps;
     }
 
-    private HashMap<Integer, HashMap> parkAtNearestLocation(Vehicle vehicle, HashMap<Integer, HashMap> lotMaps) {
+    private HashMap<Integer, HashMap<Character, HashMap<Integer, Vehicle>>> parkAtNearestLocation(Vehicle vehicle, HashMap<Integer, HashMap<Character, HashMap<Integer, Vehicle>>> lotMaps) {
         this.lotMaps = lotMaps;
-        for (HashMap<Integer, Vehicle> map : this.lotMaps.values()) {
-            if (map.containsValue(null)) {
-                Integer counter = 0;
-                for (Vehicle slots : map.values()) {
-                    counter++;
-                    if (slots == null) {
-                        map.put(counter, vehicle);
-                        System.out.println(this.lotMaps);
-                        return this.lotMaps;
+        for (HashMap<Character, HashMap<Integer, Vehicle>> maps : this.lotMaps.values()) {
+            for (HashMap<Integer, Vehicle> map : maps.values())
+                if (map.containsValue(null)) {
+                    Integer counter = 0;
+                    for (Vehicle slots : map.values()) {
+                        counter++;
+                        if (slots == null) {
+                            map.put(counter, vehicle);
+                            System.out.println(this.lotMaps);
+                            return this.lotMaps;
+                        }
                     }
                 }
-            }
         }
         return this.lotMaps;
     }
 
-    private Integer getCurrentMap(HashMap<Integer, HashMap> lotMap) {
+    private String getCurrentMap(HashMap<Integer, HashMap<Character, HashMap<Integer, Vehicle>>> lotMap) {
         int maxValue = 0;
         Integer lotNumber = 0;
-        for (HashMap<Integer, Object> map : lotMap.values()) {
-            int count = Collections.frequency(map.values(), null);
-            if (count >= maxValue) {
-                maxValue = count;
-                lotNumber++;
+        Character rowChar = 'A' - 1;
+        for (HashMap<Character, HashMap<Integer, Vehicle>> maps : lotMap.values()) {
+            rowChar = 'A' - 1;
+            lotNumber++;
+            for (HashMap<Integer, Vehicle> map : maps.values()) {
+                int count = Collections.frequency(map.values(), null);
+                if (count >= maxValue) {
+                    rowChar++;
+                    maxValue = count;
+                }
             }
         }
-        return lotNumber;
+        System.out.println(lotNumber + " " + rowChar);
+        return lotNumber + " " + rowChar;
     }
 }

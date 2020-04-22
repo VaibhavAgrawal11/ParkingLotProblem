@@ -16,7 +16,7 @@ public class ParkingLotServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        parkingLotSystem = new ParkingLotSystem(100, 1);
+        parkingLotSystem = new ParkingLotSystem(100, 10, 1);
         vehicle = new Vehicle(Vehicle.Driver.NORMAL);
         attendant = new ParkingAttendant("xyz");
     }
@@ -31,14 +31,14 @@ public class ParkingLotServiceTest {
     @Test
     public void givenVehicle_WhenUnParked_ShouldReturnTrue() throws ParkingLotException {
         parkingLotSystem.parkVehicle(vehicle, 1, 0);
-        Integer getSlot = attendant.getMyParkingSlot(vehicle);
-        boolean isUnParked = parkingLotSystem.unParkVehicle(vehicle, getSlot, 1, 4, 0);
+        String getSlot = attendant.getSlotNumber(vehicle);
+        boolean isUnParked = parkingLotSystem.unParkVehicle(vehicle, getSlot, 4, 0);
         Assert.assertTrue(isUnParked);
     }
 
     @Test
     public void givenVehicle_WhenNotParked_ShouldNotBeUnParked() {
-        boolean isUnParked = parkingLotSystem.unParkVehicle(vehicle, 1, 1, 4, 0);
+        boolean isUnParked = parkingLotSystem.unParkVehicle(vehicle, "1 A 1", 4, 0);
         Assert.assertFalse(isUnParked);
     }
 
@@ -54,7 +54,7 @@ public class ParkingLotServiceTest {
 
     @Test
     public void givenVehicles_WhenParkingFull_ShouldThrowException() {
-        ParkingLotSystem parkingLotSystem = new ParkingLotSystem(5, 1);
+        ParkingLotSystem parkingLotSystem = new ParkingLotSystem(5, 1, 1);
         try {
             parkingLotSystem.parkVehicle(vehicle, 1, 0);
             parkingLotSystem.parkVehicle(new Vehicle(Vehicle.Driver.NORMAL), 1, 0);
@@ -69,7 +69,7 @@ public class ParkingLotServiceTest {
 
     @Test
     public void givenVehicles_WhenExactParkingIsDone_ShouldReturnTrue() throws ParkingLotException {
-        ParkingLotSystem parkingLotSystem = new ParkingLotSystem(2, 1);
+        ParkingLotSystem parkingLotSystem = new ParkingLotSystem(2, 1, 1);
         parkingLotSystem.parkVehicle(new Vehicle(Vehicle.Driver.NORMAL), 1, 0);
         parkingLotSystem.parkVehicle(vehicle, 1, 0);
         boolean isParked = parkingLotSystem.isVehicleParked(vehicle);
@@ -79,7 +79,7 @@ public class ParkingLotServiceTest {
     @Test
     public void givenParkingLotFull_OwnerShouldShowFullSign() throws ParkingLotException {
         Owner owner = new Owner();
-        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(3, 1);
+        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(3, 1, 1);
         parkingLotSystem1.register(owner);
         parkingLotSystem1.parkVehicle(vehicle, 1, 0);
         parkingLotSystem1.parkVehicle(new Vehicle(Vehicle.Driver.NORMAL), 2, 0);
@@ -92,16 +92,16 @@ public class ParkingLotServiceTest {
         parkingLotSystem.parkVehicle(vehicle, 1, 0);
         parkingLotSystem.parkVehicle(new Vehicle(Vehicle.Driver.NORMAL), 2, 0);
         parkingLotSystem.parkVehicle(new Vehicle(Vehicle.Driver.NORMAL), 2, 0);
-        parkingLotSystem.unParkVehicle(vehicle, attendant.getMyParkingSlot(vehicle), 1, 2, 0);
+        parkingLotSystem.unParkVehicle(vehicle, attendant.getSlotNumber(vehicle), 2, 0);
         parkingLotSystem.parkVehicle(vehicle, 3, 0);
-        Integer parkingSlot = attendant.getMyParkingSlot(vehicle);
+        Integer parkingSlot = Integer.valueOf(attendant.getSlotNumber(vehicle).split(" ")[2]);
         Assert.assertEquals((Integer) 1, parkingSlot);
     }
 
     @Test
     public void givenParkingLotFull_SecurityShouldBeCalled() throws ParkingLotException {
         AirportSecurityPersonal securityPersonal = new AirportSecurityPersonal();
-        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(3, 1);
+        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(3, 1, 1);
         parkingLotSystem1.register(securityPersonal);
         parkingLotSystem1.parkVehicle(vehicle, 2, 0);
         parkingLotSystem1.parkVehicle(new Vehicle(Vehicle.Driver.NORMAL), 1, 0);
@@ -112,9 +112,11 @@ public class ParkingLotServiceTest {
     @Test
     public void givenParkingNotLotFull_SecurityShouldNotBeCalled() throws ParkingLotException {
         AirportSecurityPersonal securityPersonal = new AirportSecurityPersonal();
-        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(3, 1);
+        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(3, 1, 1);
         parkingLotSystem1.register(securityPersonal);
         parkingLotSystem1.parkVehicle(vehicle, 1, 0);
+        Vehicle vehicle1 = new Vehicle(Vehicle.Driver.NORMAL);
+        parkingLotSystem1.parkVehicle(vehicle1, 1, 0);
         parkingLotSystem1.parkVehicle(new Vehicle(Vehicle.Driver.NORMAL), 2, 0);
         Assert.assertFalse(securityPersonal.redirectSecurityStaff());
     }
@@ -122,64 +124,60 @@ public class ParkingLotServiceTest {
     @Test
     public void givenParkingLotFull_WhenVehicleUnParked_OwnerShouldRemoveFullSign() throws ParkingLotException {
         Owner owner = new Owner();
-        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(3, 1);
+        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(3, 1, 1);
         parkingLotSystem1.register(owner);
         parkingLotSystem1.parkVehicle(vehicle, 1, 0);
         parkingLotSystem1.parkVehicle(new Vehicle(Vehicle.Driver.NORMAL), 2, 0);
         parkingLotSystem1.parkVehicle(new Vehicle(Vehicle.Driver.NORMAL), 2, 0);
-        parkingLotSystem1.unParkVehicle(vehicle, attendant.getMyParkingSlot(vehicle), 1, 3, 0);
+        parkingLotSystem1.unParkVehicle(vehicle, attendant.getSlotNumber(vehicle), 3, 0);
         Assert.assertNull(owner.getSign());
     }
 
-    //PARKING BILL
     @Test
     public void givenParkingTime_ParkingBillShouldBeGenerated() throws ParkingLotException {
         Vehicle vehicle2 = new Vehicle(Vehicle.Driver.NORMAL);
         parkingLotSystem.parkVehicle(vehicle, 1, 0);
         parkingLotSystem.parkVehicle(vehicle2, 2, 0);
-        parkingLotSystem.unParkVehicle(vehicle2, attendant.getMyParkingSlot(vehicle2), attendant.getLotNumber(vehicle2), 3, 0);
-        parkingLotSystem.unParkVehicle(vehicle, attendant.getMyParkingSlot(vehicle), attendant.getLotNumber(vehicle), 4, 0);
-        Assert.assertEquals(7.5,ParkingBill.generateParkingBill(vehicle), 0);
+        parkingLotSystem.unParkVehicle(vehicle2, attendant.getSlotNumber(vehicle2), 3, 0);
+        parkingLotSystem.unParkVehicle(vehicle, attendant.getSlotNumber(vehicle), 4, 0);
+        Assert.assertEquals(7.5, ParkingBill.generateParkingBill(vehicle), 0);
     }
 
     @Test
     public void givenMultipleParkingLots_WhenVehicleUnParked_ShouldGetLotNumber() throws ParkingLotException {
-        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(4, 2);
+        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(4, 2, 2);
         parkingLotSystem1.parkVehicle(vehicle, 1, 0);
         parkingLotSystem1.parkVehicle(new Vehicle(Vehicle.Driver.NORMAL), 2, 0);
         parkingLotSystem1.parkVehicle(new Vehicle(Vehicle.Driver.NORMAL), 2, 0);
         parkingLotSystem1.parkVehicle(new Vehicle(Vehicle.Driver.NORMAL), 3, 0);
         boolean isUnParked = parkingLotSystem1.unParkVehicle(vehicle,
-                attendant.getMyParkingSlot(vehicle),
-                attendant.getLotNumber(vehicle),
+                attendant.getSlotNumber(vehicle),
                 3, 0);
         Assert.assertTrue(isUnParked);
     }
 
     @Test
     public void givenDriverIsHandicap_VehicleShouldBeParkedNearestEmptySlot() throws ParkingLotException {
-        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(4, 2);
+        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(4, 2, 2);
         Vehicle vehicle = new Vehicle(Vehicle.Driver.HANDICAP);
         parkingLotSystem1.parkVehicle(vehicle, 2, 0);
-        Integer getParkingLot = attendant.getLotNumber(vehicle);
-        Integer getParkingSlot = attendant.getMyParkingSlot(vehicle);
-        Assert.assertEquals("1 1", getParkingLot + " " + getParkingSlot);
+        String getParkingLot = attendant.getSlotNumber(vehicle);
+        Assert.assertEquals("1 A 1", getParkingLot);
     }
 
     @Test
     public void givenVehicleTypeIsLarge_ShouldParkedAtMostFreeSpace() throws ParkingLotException {
-        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(4, 2);
+        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(4, 2, 2);
         Vehicle vehicle1 = new Vehicle(Vehicle.VehicleType.LARGE);
         parkingLotSystem1.parkVehicle(vehicle, 10, 0);
         parkingLotSystem1.parkVehicle(vehicle1, 2, 0);
-        Integer getParkingLot = attendant.getLotNumber(vehicle1);
-        Integer getParkingSlot = attendant.getMyParkingSlot(vehicle1);
-        Assert.assertEquals("1 1", getParkingLot + " " + getParkingSlot);
+        String getParkingLot = attendant.getSlotNumber(vehicle1);
+        Assert.assertEquals("1 A 1", getParkingLot);
     }
 
     @Test
     public void givenVehicleColour_PoliceShouldGetTheListOfVehicleLocation() throws ParkingLotException {
-        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(8, 2);
+        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(8, 2, 2);
         Vehicle vehicle1 = new Vehicle("white");
         parkingLotSystem1.parkVehicle(vehicle, 1, 0);
         parkingLotSystem1.parkVehicle(vehicle1, 2, 0);
@@ -194,7 +192,7 @@ public class ParkingLotServiceTest {
 
     @Test
     public void givenVehicle_WhenCompanyNameProvided_ShouldReturnListOfVehicles() throws ParkingLotException {
-        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(8, 2);
+        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(8, 2, 2);
         Vehicle vehicle1 = new Vehicle("blue", "GJ06KL7860", "Toyota", attendant.attendantName);
         parkingLotSystem1.parkVehicle(vehicle, 1, 0);
         parkingLotSystem1.parkVehicle(vehicle1, 2, 0);
@@ -209,7 +207,7 @@ public class ParkingLotServiceTest {
 
     @Test
     public void givenVehicle_WhenBMW_ShouldReturnList() throws ParkingLotException {
-        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(8, 3);
+        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(8, 3, 3);
         Vehicle vehicle1 = new Vehicle("blue", "GJ06KL7860", "BMW", attendant.attendantName);
         parkingLotSystem1.parkVehicle(vehicle, 1, 0);
         parkingLotSystem1.parkVehicle(vehicle1, 2, 0);
@@ -224,7 +222,7 @@ public class ParkingLotServiceTest {
 
     @Test
     public void givenVehicle_WhenParkedInPassed30Minutes_ShouldBeReturn() throws ParkingLotException {
-        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(8, 3);
+        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(8, 3, 3);
         Vehicle vehicle1 = new Vehicle("blue", "GJ06KL7860", "BMW", attendant.attendantName);
         parkingLotSystem1.parkVehicle(vehicle, 22, 31);
         parkingLotSystem1.parkVehicle(vehicle1, 23, 34);
@@ -233,7 +231,7 @@ public class ParkingLotServiceTest {
         parkingLotSystem1.parkVehicle(new Vehicle("blue", "GJ06KL9008", "Toyota", attendant.attendantName), 1, 40);
         parkingLotSystem1.parkVehicle(new Vehicle("white", "GJ06KL3845", "BMW", attendant.attendantName), 1, 50);
         PoliceDepartment police = new PoliceDepartment(parkingLotSystem1);
-        List list = police.getRecentVehicle(2,00);
+        List list = police.getRecentVehicle(2, 00);
         Assert.assertEquals(3, list.size());
     }
 }
